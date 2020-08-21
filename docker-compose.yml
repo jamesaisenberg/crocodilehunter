@@ -1,0 +1,29 @@
+version: "3"
+
+volumes:
+  mysql:
+    driver: local
+
+services:
+ mysql:
+   restart: always
+   image: mariadb:latest
+   environment:
+     MYSQL_ROOT_PASSWORD: toor
+   volumes:
+     - mysql:/var/lib/mysql
+
+ web:
+   restart: always
+   build:
+      context: .
+      dockerfile: ./Dockerfile
+   devices:
+      - /dev/bus/usb:/dev/bus/usb
+   links:
+     - mysql:mysql
+   ports:
+     - "5000:5000"
+   expose:
+     - "5000"
+   command: python3 crocodilehunter.py --disable-gps
